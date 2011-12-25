@@ -2,8 +2,52 @@ package Test::Successful;
 
 use strict;
 use warnings;
-use 5.008_001;
+
+BEGIN {
+    *CORE::GLOBAL::exit = sub { };
+    *CORE::GLOBAL::die  = sub { };
+}
+
 our $VERSION = '0.01';
+use Test::Builder;
+use Test::More ();
+
+my $org_ok           = Test::Builder->can('ok');
+my $org_done_testing = Test::Builder->can('done_testing');
+my $is_fast;
+
+sub import {
+    my ($class, $args) = @_;
+    if ($args && lc $args eq ':fast') {
+        $is_fast = 1;
+    }
+}
+
+no warnings 'redefine';
+*Test::Builder::ok = sub {
+    my ($self, $test, $name) = @_;
+    my $is_ok = $org_ok->($self, 1, $name);
+    CORE::exit(0) if $is_fast;
+    return $is_ok;
+};
+
+my $is_done_testing;
+*Test::Builder::done_testing = sub {
+    my ($self, $num_tests) = @_;
+    return if $is_done_testing;
+    unless ($self->current_test) {
+        $self->ok(1);
+    }
+    $org_done_testing->($self, $self->current_test);
+    $is_done_testing = 1;
+    CORE::exit(0);
+};
+
+*Test::Builder::plan = sub { };
+
+END {
+    $Test::Builder::Test->done_testing;
+}
 
 1;
 __END__

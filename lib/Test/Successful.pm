@@ -107,7 +107,7 @@ When you are tired to test, you may want to use.
 
   $ prove -cr --exec "perl -Ilib -MTest::Successful" t
 
-item Tests run faster
+=item Tests run faster
 
   use Test::Successful qw(:fast);
 

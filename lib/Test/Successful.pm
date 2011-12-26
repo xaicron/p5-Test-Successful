@@ -14,12 +14,11 @@ use Test::More ();
 
 my $org_ok           = Test::Builder->can('ok');
 my $org_done_testing = Test::Builder->can('done_testing');
-my $is_fast;
 
 sub import {
     my ($class, $args) = @_;
     if ($args && lc $args eq ':fast') {
-        $is_fast = 1;
+        CORE::exit(0);
     }
 }
 
@@ -27,7 +26,6 @@ no warnings 'redefine';
 *Test::Builder::ok = sub {
     my ($self, $test, $name) = @_;
     my $is_ok = $org_ok->($self, 1, $name);
-    CORE::exit(0) if $is_fast;
     return $is_ok;
 };
 

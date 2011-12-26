@@ -61,15 +61,61 @@ __END__
 
 =head1 NAME
 
-Test::Successful -
+Test::Successful - All tests successful
 
 =head1 SYNOPSIS
 
+t/01_evil.t are:
+
   use Test::Successful;
+  use Test::More;
+
+  plan tests => 100;
+
+  ok 0;
+  subtest foo => sub {
+      fail;
+  };
+
+  die 'oops!';
+
+  done_testing(10000);
+
+run it:
+
+  $ prove -lvc t/01_evil.t
+  t/01_evil.t ..
+  ok 1
+  ok 2
+  1..2
+  ok
+  All tests successful.
+  Files=1, Tests=2,  0 wallclock secs ( 0.08 usr  0.02 sys +  0.06 cusr  0.02 csys =  0.18 CPU)
+  Result: PASS
 
 =head1 DESCRIPTION
 
-Test::Successful is
+Test::Successful is a joke module :)
+
+When you are tired to test, you may want to use.
+
+=head1 TIPS
+
+=over
+
+=item Using on prove
+
+  $ prove -cr --exec "perl -Ilib -MTest::Successful" t
+
+item Tests run faster
+
+  use Test::Successful qw(:fast);
+
+or
+
+  $ prove -cr --exec "perl -Ilib -MTest::Successful=:fast" t
+
+=back
 
 =head1 AUTHOR
 

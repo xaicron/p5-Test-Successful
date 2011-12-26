@@ -45,6 +45,11 @@ my $is_done_testing;
 
 *Test::Builder::plan = sub { };
 
+*Test::Builder::subtest = sub {
+    my ($self, $name, $subtests) = @_;
+    $subtests->();
+};
+
 END {
     $Test::Builder::Test->done_testing;
 }
